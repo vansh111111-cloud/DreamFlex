@@ -1,17 +1,15 @@
-<header class="bg-gradient-to-b from-black p-4 flex justify-between items-center">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DREAMFLEX</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <h1 class="text-4xl font-bold text-red-600">DREAMFLEX</h1>
-  <nav class="flex items-center space-x-10">
-    <a href="/user/netflex/home" class="nav-link"><i class="fas fa-home nav-icon"></i></a>
-    <a href="/user/netflex/mylist" class="nav-link"><i class="fas fa-heart nav-icon"></i></a>
-    <a href="/user/netflex/tvshows" class="nav-link"><i class="fas fa-tv nav-icon"></i></a>
-    <a href="/user/netflex/search" class="nav-link"><i class="fas fa-magnifying-glass nav-icon"></i></a>
-    <a href="/user/netflex/setting" class="nav-link"><i class="fas fa-gear nav-icon"></i></a>
-    <% if (role === 'creator' || role === 'admin') { %>
-      <a href="/user/netflex/upload" class="nav-link"><i class="fas fa-cloud-arrow-up nav-icon"></i></a>
-    <% } %>
-  </nav>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
   <style>
     .nav-link {
@@ -23,7 +21,7 @@
     }
 
     .nav-icon {
-      font-size: 2.5rem; /* bigger icons */
+      font-size: 1.5rem; /* bigger icons */
       color: #888;       /* default grey */
       transition: color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
     }
@@ -34,9 +32,34 @@
       filter: drop-shadow(0 0 10px #e50914); /* subtle glow */
     }
 
+    /* 📱 Responsive for mobile */
     @media (max-width: 768px) {
-      .nav-icon { font-size: 2rem; }
-      nav { space: x -6px; }
+      .nav-icon { font-size: 1.8rem; }
+      nav { gap: 12px; }
+      h1 { font-size: 1.8rem; }
     }
   </style>
-</header>
+</head>
+
+<body class="bg-black text-white">
+  <!-- Navbar -->
+  <header class="bg-gradient-to-b from-black p-4 flex justify-between items-center">
+    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-red-600">
+      DREAMFLEX
+    </h1>
+
+    <nav class="flex items-center space-x-6 md:space-x-10">
+      <a href="/user/netflex/home" class="nav-link"><i class="fas fa-home nav-icon"></i></a>
+      <a href="/user/netflex/mylist" class="nav-link"><i class="fas fa-heart nav-icon"></i></a>
+      <a href="/user/netflex/tvshows" class="nav-link"><i class="fas fa-tv nav-icon"></i></a>
+      <a href="/user/netflex/search" class="nav-link"><i class="fas fa-magnifying-glass nav-icon"></i></a>
+      <a href="/user/netflex/setting" class="nav-link"><i class="fas fa-gear nav-icon"></i></a>
+      <% if (role === 'creator' || role === 'admin') { %>
+        <a href="/user/netflex/upload" class="nav-link"><i class="fas fa-cloud-arrow-up nav-icon"></i></a>
+      <% } %>
+    </nav>
+  </header>
+
+  
+</body>
+</html>
