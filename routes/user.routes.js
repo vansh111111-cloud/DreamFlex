@@ -459,10 +459,18 @@ console.log("Movie body data:", req.body);
   console.log("Buffer length:", movieFile.buffer.length);
         const moviePath = "/movies/" + Date.now() + "-" + movieFile.originalname;
        if (movieFile.size < 150 * 1024 * 1024) {
+        let simulatedPercent = 0;
+  const interval = setInterval(() => {
+    if (simulatedPercent < 90) {
+      simulatedPercent += 10;
+      broadcastProgress(simulatedPercent);
+    }
+  }, 300); // every 300ms
     // Small file, normal upload
     await dbx.filesUpload({ path: moviePath, contents: movieFile.buffer });
-         console.log(`Upload progress: ${percent}%`);
-          broadcastProgress(percent); // sends updates to frontend via SSE
+       clearInterval(interval);
+  broadcastProgress(100);
+  console.log("Upload complete (small file).");
   } else {
         await uploadLargeFile(dbx, movieFile.buffer, moviePath, (percent) => {
           console.log(`Upload progress: ${percent}%`);
