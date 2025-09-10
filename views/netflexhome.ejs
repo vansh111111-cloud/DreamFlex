@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflex - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    body { background-color: #000; color: #fff; }
+
+    .nav-icon {
+      color: #888;
+      font-size: 1.8rem;
+      transition: color 0.3s, transform 0.2s;
+    }
+    .nav-icon:hover { color: #e50914; transform: scale(1.2); }
+
+    .hero {
+      position: relative;
+      height: 60vh;
+      width: 100%;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      border-radius: 0.75rem;
+    }
+    .hero-slide {
+      display: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .hero-slide.active { display: block; }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+    }
+    .hero-text {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      z-index: 10;
+    }
+    .hero-text h1 { font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem; }
+    .hero-text a {
+      background: #e50914;
+      padding: 0.5rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .hero-text a:hover { background: #f6121d; }
+
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 1rem;
+    }
+    .slider::-webkit-scrollbar { display: none; }
+    .slider-item {
+      flex: 0 0 auto;
+      margin-right: 0.5rem;
+      transition: transform 0.3s;
+    }
+    .slider-item img {
+      height: 200px;
+      width: 140px;
+      border-radius: 0.5rem;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .slider-item:hover img { transform: scale(1.05); }
+
+    @media (max-width: 768px) {
+      .hero-text h1 { font-size: 1.5rem; }
+      .slider-item img { height: 150px; width: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<%- include('partials/navbar') %>
+
+
+  <main class="p-6">
+
+    <% if (movies.length > 0) { %>
+      <section class="hero">
+        <% const latestThree = movies.slice(-3).reverse(); %>
+        <% latestThree.forEach((movie, index) => { %>
+          <a href="/user/netflex/movie/<%= movie._id %>">
+            <img src="<%= movie.posterUrl %>" class="hero-slide <%= index===0 ? 'active' : '' %>">
+          </a>
+        <% }) %>
+        <div class="hero-overlay"></div>
+        <div class="hero-text">
+          <h1>Welcome to Netflex</h1>
+          <p class="mb-2">Watch trending movies & shows</p>
+          <a href="/user/netflex/movie/<%= latestThree[0]._id %>">Watch Now</a>
+        </div>
+      </section>
+    <% } %>
+
+    <section>
+      <h2 class="text-xl md:text-2xl font-semibold mb-4">Latest Uploads</h2>
+      <div class="slider">
+        <% const sortedMovies = [...movies]; if (sortedMovies.length > 0) { const latest = sortedMovies.pop(); sortedMovies.unshift(latest); } %>
+        <% sortedMovies.forEach(movie => { %>
+          <a href="/user/netflex/movie/<%= movie._id %>" class="slider-item">
+            <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>">
+          </a>
+        <% }) %>
+      </div>
+    </section>
+
+    <% const categories = [...new Set(movies.map(m => m.type))].filter(t => t && t !== ''); %>
+    <% categories.forEach(cat => { 
+         const catMovies = movies.filter(m => m.type === cat); %>
+      <section>
+        <h2 class="text-xl md:text-2xl font-semibold mb-4"><%= cat %></h2>
+        <div class="slider">
+          <% catMovies.forEach(movie => { %>
+            <a href="/user/netflex/movie/<%= movie._id %>" class="slider-item">
+              <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>">
+            </a>
+          <% }) %>
+        </div>
+      </section>
+    <% }) %>
+
+  </main>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const watchBtn = document.querySelector('.hero-text a');
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+      if(slides[index]) watchBtn.href = slides[index].parentElement.href;
+    }
+
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }, 3000);
+  </script>
+
+</body>
+</html>

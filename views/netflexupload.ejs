@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Movie - Netflex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    .nav-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-icon {
+      font-size: 2.5rem; /* bigger icons */
+      color: #888;       /* default grey */
+      transition: color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-link:hover .nav-icon {
+      color: #e50914;     /* Netflix red on hover */
+      transform: scale(1.4) rotate(-5deg); /* slight rotate + grow */
+      filter: drop-shadow(0 0 10px #e50914); /* subtle glow */
+    }
+
+    @media (max-width: 768px) {
+      .nav-icon { font-size: 2rem; }
+      nav { gap: x -6px; }
+    }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+
+<%- include('partials/navbar') %>
+
+  <div class="max-w-3xl mx-auto p-6 bg-gray-900 rounded-lg shadow-lg mt-8">
+    <h2 class="text-2xl font-bold mb-6">Upload New Movie</h2>
+
+    <form action="/user/netflex/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
+      
+      <!-- Title -->
+      <div>
+        <label class="block mb-1 text-gray-300">Title</label>
+        <input type="text" name="title" required class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+       <!-- Type (Movie / Series / Song) -->
+  <label for="type" class="block mb-1 text-gray-300">Select Type</label>
+  <select name="type" id="type" required>
+    <option value="movie">Movie</option>
+    <option value="series">Web Series</option>
+    <option value="song">Song</option>
+  </select>
+ <!-- Episode fields (visible only if Series is selected) -->
+<div id="seriesFields" class="hidden">
+
+  
+</div>
+
+      <!-- Description -->
+      <div>
+        <label class="block mb-1 text-gray-300">Description</label>
+        <textarea name="description" rows="4" required class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none"></textarea>
+      </div>
+
+      <!-- Year -->
+      <div>
+        <label class="block mb-1 text-gray-300">Year</label>
+        <input type="number" name="year" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+      <!-- Country -->
+      <div>
+        <label class="block mb-1 text-gray-300">Country</label>
+        <input type="text" name="country" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+     <!-- Genre -->
+     <div>
+       <label class="block mb-1 text-gray-300">Genre</label>
+       <div class="flex flex-wrap gap-4 text-gray-200">
+         <label><input type="checkbox" name="genre" value="Action"> Action</label>
+         <label><input type="checkbox" name="genre" value="Drama"> Drama</label>
+         <label><input type="checkbox" name="genre" value="Comedy"> Comedy</label>
+         <label><input type="checkbox" name="genre" value="Thriller"> Thriller</label>
+         <label><input type="checkbox" name="genre" value="Romance"> Romance</label>
+         <label><input type="checkbox" name="genre" value="Sci-Fi"> Adventure</label>
+             <label><input type="checkbox" name="genre" value="Sci-Fi"> Horror</label>
+                  <label><input type="checkbox" name="genre" value="Adventure"> </label>
+                       <label><input type="checkbox" name="genre" value="Fantasy"> Fantasy</label>
+
+                            <label><input type="checkbox" name="genre" value="Drama"> Song</label>       
+       </div>
+     </div>
+
+      <!-- Audio Languages -->
+      <div>
+        <label class="block mb-1 text-gray-300">Audio Languages</label>
+        <input type="text" name="audioLanguages" placeholder="English, Hindi, Spanish" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+      <!-- Director -->
+      <div>
+        <label class="block mb-1 text-gray-300">Director</label>
+        <input type="text" name="director" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+      <!-- Cast -->
+      <div>
+        <label class="block mb-1 text-gray-300">Cast (comma separated)</label>
+        <input type="text" name="cast" placeholder="Actor1, Actor2, Actor3" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+      <!-- Duration -->
+      <div>
+        <label class="block mb-1 text-gray-300">Duration (minutes)</label>
+        <input type="number" name="duration" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+      <!-- Tags -->
+      <div>
+        <label class="block mb-1 text-gray-300">Tags</label>
+        <input type="text" name="tags" placeholder="Thriller, Family, Blockbuster" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+      <!-- Rating -->
+      <div>
+        <label class="block mb-1 text-gray-300">Rating (1-10)</label>
+        <input type="number" name="rating" min="1" max="10" step="0.1" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none">
+      </div>
+
+      <!-- Poster Upload -->
+      <div>
+        <label class="block mb-1 text-gray-300">Poster</label>
+        <input type="file" name="poster" accept="image/*" class="w-full text-gray-300">
+      </div>
+
+     <!-- Actress Photos Upload -->
+     <div>
+       <label class="block mb-1 text-gray-300">Actress Photos</label>
+         <input type="file" name="actressPhotos" accept="image/*" multiple class="w-full text-gray-300">
+           <small class="text-gray-400">You can upload multiple actress photos</small>
+           </div>
+           
+      <!-- Trailer Upload -->
+      <div>
+        <label class="block mb-1 text-gray-300">Trailer</label>
+        <input type="file" name="movie" accept="video/*" class="w-full text-gray-300">
+      </div>
+
+      <!-- Submit -->
+      <div class="text-center">
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-lg">Upload Movie</button>
+      </div>
+
+    </form>
+    <div class="w-full bg-gray-200 rounded-full mt-4">
+  <div id="progressBar" 
+       class="bg-blue-500 text-xs leading-none py-1 text-center text-white rounded-full" 
+       style="width: 0%">
+    0%
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('uploadForm');
+  const progressBar = document.getElementById('progressBar');
+
+  // Step 1: Open SSE for progress updates
+  const eventSource = new EventSource('/upload-progress');
+  eventSource.onmessage = function (event) {
+    const percent = parseInt(event.data, 10);
+    progressBar.style.width = percent + '%';
+    progressBar.textContent = percent + '%';
+
+    if (percent >= 100) {
+      setTimeout(() => {
+        window.location.href = '/user/netflex/home'; // redirect after done
+      }, 1000);
+    }
+  };
+
+  // Step 2: Intercept form submit
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    fetch('/netflex/upload', {
+      method: 'POST',
+      body: formData
+    }).catch(err => alert("Upload failed: " + err.message));
+  });
+</script>
+
+  </div>
+
+</body>
+</html>

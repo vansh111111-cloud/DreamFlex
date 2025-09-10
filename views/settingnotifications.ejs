@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflix – Notifications</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white">
+  <%- include('partials/navbar') %>
+
+  <section class="max-w-3xl mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">🔔 Notification Preferences</h1>
+
+    <form class="bg-gray-900 p-6 rounded-lg shadow space-y-4">
+      <label class="flex items-center">
+        <input type="checkbox" checked class="mr-3">
+        Email Notifications about new releases
+      </label>
+      <label class="flex items-center">
+        <input type="checkbox" class="mr-3">
+        SMS Alerts for account activity
+      </label>
+      <label class="flex items-center">
+        <input type="checkbox" checked class="mr-3">
+        App Push Notifications
+      </label>
+
+      <button class="bg-red-600 px-6 py-2 rounded font-semibold hover:bg-red-700">Save Preferences</button>
+    </form>
+  </section>
+</body>
+</html>

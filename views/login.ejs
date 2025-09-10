@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="bg-black text-white h-screen flex items-center justify-center">
+    <div class="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-lg">
+      <h2 class="text-3xl font-bold text-red-600 mb-6 text-center">Login</h2>
+
+      <form action="/user/login" method="post" class="space-y-6">
+        <!-- Username -->
+        <div>
+          <label
+            for="user-name"
+            class="block mb-2 text-sm font-medium text-gray-300"
+          >
+            Username
+          </label>
+          <input
+            type="text"
+            id="user-name"
+            name="username"
+            placeholder="John"
+            required
+            class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:ring-red-500 focus:border-red-500"
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label
+            for="password"
+            class="block mb-2 text-sm font-medium text-gray-300"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="•••••••••"
+            required
+            class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:ring-red-500 focus:border-red-500"
+          />
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full py-3 bg-red-600 hover:bg-red-700 rounded font-medium"
+        >
+          Submit
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-gray-400">
+        Don’t have an account?
+        <a href="/user/register" class="text-red-500 hover:underline">
+          Register here
+        </a>
+      </p>
+       <p class="mt-6 text-center text-gray-400">
+        Or
+      </p>
+
+      <a href="/user/auth/google" style="text-decoration:none;">
+  <button type="button" 
+    style="display:flex;align-items:center;justify-content:center;gap:10px;
+           background:#fff;border:1px solid #ccc;padding:10px 20px;
+           border-radius:5px;cursor:pointer;font-size:16px;font-family:sans-serif;">
+    
+<img src ="https://th.bing.com/th/id/R.0fa3fe04edf6c0202970f2088edea9e7?rik=joOK76LOMJlBPw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fgoogle-logo-png-open-2000.png&ehk=0PJJlqaIxYmJ9eOIp9mYVPA4KwkGo5Zob552JPltDMw%3d&risl=&pid=ImgRaw&r=0"  
+       alt="Google logo" style="width:20px;height:20px;">
+    
+    <span style="color:#555;">Continue with Google</span>
+  </button>
+</a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflix – Devices</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white">
+  <%- include('partials/navbar') %>
+
+  <section class="max-w-4xl mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">📱 Devices</h1>
+
+    <div class="bg-gray-900 p-6 rounded-lg shadow space-y-4">
+      <p class="text-gray-300 mb-4">Manage devices that are signed in with your account.</p>
+
+      <ul class="space-y-2">
+        <li class="flex justify-between items-center bg-gray-800 p-3 rounded">
+          <span>Samsung Smart TV – Bangalore</span>
+          <button class="text-red-500 hover:underline">Sign Out</button>
+        </li>
+        <li class="flex justify-between items-center bg-gray-800 p-3 rounded">
+          <span>MacBook Pro – Delhi</span>
+          <button class="text-red-500 hover:underline">Sign Out</button>
+        </li>
+        <li class="flex justify-between items-center bg-gray-800 p-3 rounded">
+          <span>OnePlus Nord – Pune</span>
+          <button class="text-red-500 hover:underline">Sign Out</button>
+        </li>
+      </ul>
+    </div>
+  </section>
+</body>
+</html>

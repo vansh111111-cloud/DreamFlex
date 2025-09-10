@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Notifications</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+  <h1 class="text-3xl mb-6">📩 Creator Requests</h1>
+
+  <% if (requests.length === 0) { %>
+    <p>No new requests.</p>
+  <% } else { %>
+    <ul class="space-y-4">
+      <% requests.forEach(req => { %>
+        <li class="p-4 bg-gray-800 rounded-lg shadow flex justify-between items-center">
+          <div>
+            <p><strong>User:</strong> <%= req.userId.username %></p>
+            <p><strong>Reason:</strong> <%= req.reason %></p>
+            <p><strong>Status:</strong> <%= req.status %></p>
+          </div>
+          <div class="space-x-2">
+            <form action="/admin/netflex/setting/notifications/<%= req._id %>/approve" method="POST" class="inline">
+              <button class="px-4 py-2 bg-green-600 rounded hover:bg-green-500">Approve</button>
+            </form>
+            <form action="/admin/netflex/setting/notifications/<%= req._id %>/reject" method="POST" class="inline">
+              <button class="px-4 py-2 bg-red-600 rounded hover:bg-red-500">Reject</button>
+            </form>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</body>
+</html>
+ 

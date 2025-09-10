@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NETFLEX - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    .nav-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-icon {
+      font-size: 2.5rem; /* bigger icons */
+      color: #888;       /* default grey */
+      transition: color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-link:hover .nav-icon {
+      color: #e50914;     /* Netflix red on hover */
+      transform: scale(1.4) rotate(-5deg); /* slight rotate + grow */
+      filter: drop-shadow(0 0 10px #e50914); /* subtle glow */
+    }
+
+    @media (max-width: 768px) {
+      .nav-icon { font-size: 2rem; }
+      nav { gap: x -6px; }
+    }
+  </style>
+</head>
+<body class="bg-black text-white">
+
+<%- include('partials/navbar') %>
+
+  <section class="p-6 max-w-xl mx-auto">
+    <h2 class="text-2xl font-bold mb-6">Account Settings</h2>
+
+    <ul class="space-y-4">
+      <li>
+        <a href="/user/netflex/setting/profile" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          👤 Profile
+        </a>
+      </li>
+      <li>
+        <a href="/user/netflex/setting/admin" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          🛠️ Admin Form
+        </a>
+      </li>
+      <li>
+        <a href="/user/netflex/setting/creator" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          🎬 Creator Form
+        </a>
+      </li>
+      <li>
+        <a href="/user/netflex/setting/security" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          🔒 Security
+        </a>
+      </li>
+      <li>
+        <a href="/user/netflex/setting/subscription" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          💳 Subscription & Billing
+        </a>
+      </li>
+      <ul>
+  <% if (role === 'admin') { %>
+    <li>
+      <a href="/admin/netflex/setting/notifications" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">  🔔 Notifications</a>
+    </li>
+  <% } %>
+
+  <% if (role === 'creator') { %>
+    <li><a href="/creator/netflex/setting/notifications" class="block p-4 rounded bg-gray-800 hover:bg-gray-700"> 🔔  Notifications</a></li>
+  <% } %>
+
+  <% if (role === 'user') { %>
+    <li><a href="/user/netflex/setting/notifications" class="block p-4 rounded bg-gray-800 hover:bg-gray-700"> 🔔  Notifications</a></li>
+  <% } %>
+</ul>
+
+      <li>
+        <a href="/user/netflex/setting/language" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          🌐 Language & Region
+        </a>
+      </li>
+      <li>
+        <a href="/user/netflex/setting/playback" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          ▶️ Playback Settings
+        </a>
+      </li>
+      <li>
+        <a href="/user/netflex/setting/devices" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          📱 Manage Devices
+        </a>
+      </li>
+      <li>
+        <a href="/user/netflex/setting/help" class="block p-4 rounded bg-gray-800 hover:bg-gray-700">
+          ❓ Help Center
+        </a>
+      </li>
+    </ul>
+
+    <!-- Logout Button -->
+    <div class="mt-8">
+      <form action="/user/netflex/setting/logout" method="POST">
+        <button class="w-full p-4 rounded bg-red-600 hover:bg-red-700 font-bold">
+          🚪 Log Out
+        </button>
+      </form>
+    </div>
+  </section>
+
+</body>
+</html>

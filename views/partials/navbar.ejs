@@ -1,0 +1,40 @@
+<header class="bg-gradient-to-b from-black p-4 flex justify-between items-center">
+  <h1 class="text-4xl font-bold text-red-600">NETFLEX</h1>
+  <nav class="flex items-center space-x-10">
+    <a href="/user/netflex/home" class="nav-link"><i class="fas fa-home nav-icon"></i></a>
+    <a href="/user/netflex/mylist" class="nav-link"><i class="fas fa-heart nav-icon"></i></a>
+    <a href="/user/netflex/tvshows" class="nav-link"><i class="fas fa-tv nav-icon"></i></a>
+    <a href="/user/netflex/search" class="nav-link"><i class="fas fa-magnifying-glass nav-icon"></i></a>
+    <a href="/user/netflex/setting" class="nav-link"><i class="fas fa-gear nav-icon"></i></a>
+    <% if (role === 'creator' || role === 'admin') { %>
+      <a href="/user/netflex/upload" class="nav-link"><i class="fas fa-cloud-arrow-up nav-icon"></i></a>
+    <% } %>
+  </nav>
+
+  <style>
+    .nav-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-icon {
+      font-size: 2.5rem; /* bigger icons */
+      color: #888;       /* default grey */
+      transition: color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-link:hover .nav-icon {
+      color: #e50914;     /* Netflix red on hover */
+      transform: scale(1.4) rotate(-5deg); /* slight rotate + grow */
+      filter: drop-shadow(0 0 10px #e50914); /* subtle glow */
+    }
+
+    @media (max-width: 768px) {
+      .nav-icon { font-size: 2rem; }
+      nav { space: x -6px; }
+    }
+  </style>
+</header>

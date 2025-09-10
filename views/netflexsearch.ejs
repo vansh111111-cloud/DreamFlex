@@ -1,0 +1,89 @@
+<!-- views/search.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflex | Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    .nav-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-icon {
+      font-size: 2.5rem; /* bigger icons */
+      color: #888;       /* default grey */
+      transition: color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-link:hover .nav-icon {
+      color: #e50914;     /* Netflix red on hover */
+      transform: scale(1.4) rotate(-5deg); /* slight rotate + grow */
+      filter: drop-shadow(0 0 10px #e50914); /* subtle glow */
+    }
+
+    @media (max-width: 768px) {
+      .nav-icon { font-size: 2rem; }
+      nav { gap: x -6px; }
+    }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+  <head>
+<%- include('partials/navbar') %>
+</head>
+
+  <header class="flex justify-between items-center px-6 py-4 bg-black bg-opacity-90">
+   
+    <form action="/user/netflex/search" method="GET" class="flex space-x-2">
+      <input 
+        type="text" 
+        name="query" 
+        placeholder="Search for a movie..." 
+        required
+        class="px-3 py-2 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-red-600"
+      />
+      <button 
+        type="submit" 
+        class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-semibold"
+      >
+        Search
+      </button>
+    </form>
+  </header>
+
+  <!-- Search Results -->
+  <main class="px-6 py-6">
+    <% if (movies && movies.length > 0) { %>
+      <h2 class="text-2xl font-semibold mb-4">Search Results</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <% movies.forEach(movie => { %>
+          <div class="bg-gray-900 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300">
+            <a href="/user/netflex/movie/<%= movie._id %>">
+    <img 
+      src="<%= movie.poster %>" 
+      alt="<%= movie.title %>" 
+      class="w-full h-60 object-cover hover:opacity-80 transition"
+    />
+  </a>
+            <div class="p-3">
+              <h3 class="text-lg font-bold truncate"><%= movie.title %></h3>
+              <p class="text-sm text-gray-400"><%= movie.year %></p>
+        
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else if (movies) { %>
+      <p class="text-gray-400 text-lg">No movies found.</p>
+    <% } %>
+  </main>
+</body>
+</html>

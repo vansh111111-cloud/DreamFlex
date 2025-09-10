@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NETFLEX - TV Shows</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    .nav-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-icon {
+      font-size: 2.5rem; /* bigger icons */
+      color: #888;       /* default grey */
+      transition: color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-link:hover .nav-icon {
+      color: #e50914;     /* Netflix red on hover */
+      transform: scale(1.4) rotate(-5deg); /* slight rotate + grow */
+      filter: drop-shadow(0 0 10px #e50914); /* subtle glow */
+    }
+
+    @media (max-width: 768px) {
+      .nav-icon { font-size: 2rem; }
+      nav { gap: x -6px; }
+    }
+  </style>
+</head>
+<body class="bg-black text-white">
+<%- include('partials/navbar') %>
+
+  <section class="p-6">
+    <h2 class="text-2xl mb-4 font-bold">Popular TV Shows</h2>
+    <div class="grid grid-cols-6 gap-4">
+      <div><img src="https://image.tmdb.org/t/p/w300/5VVA8agvvhdV2TlM8ktX3Af1fCp.jpg"></div>
+      <div><img src="https://image.tmdb.org/t/p/w300/rqkmM3L2tOjZ9RkX6LRiG6chxMx.jpg"></div>
+      <div><img src="https://image.tmdb.org/t/p/w300/ooBGRQBdbGzBxAVfExiO8r7kloA.jpg"></div>
+      <div><img src="https://image.tmdb.org/t/p/w300/wJUJROdP9zU8xS3n3S7Qp3p0QOk.jpg"></div>
+      <div><img src="https://image.tmdb.org/t/p/w300/g1AjBUv4rU8BvbZXGfya3eKbr8F.jpg"></div>
+      <div><img src="https://image.tmdb.org/t/p/w300/7jO8xaFbG2pj7hWcWnczuVoRf0K.jpg"></div>
+    </div>
+  </section>
+</body>
+</html>

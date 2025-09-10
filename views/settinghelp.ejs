@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflix - Help Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white">
+  <%- include('partials/navbar') %>
+
+  <section class="max-w-3xl mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">❓ Help & Support</h1>
+
+    <div class="bg-gray-900 p-6 rounded-lg shadow space-y-4">
+      <p class="text-gray-300">Find answers to common questions or contact support.</p>
+      <ul class="list-disc list-inside space-y-2">
+        <li><a href="#" class="text-red-500 hover:underline">How to reset password?</a></li>
+        <li><a href="#" class="text-red-500 hover:underline">How to change language?</a></li>
+        <li><a href="#" class="text-red-500 hover:underline">Billing & Subscription FAQs</a></li>
+      </ul>
+      <button class="bg-red-600 px-6 py-2 rounded font-semibold hover:bg-red-700">
+        Contact Support
+      </button>
+    </div>
+  </section>
+</body>
+</html>

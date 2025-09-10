@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      .letter {
+        display: inline-block;
+        opacity: 0;
+        transform: translateX(50px); /* start slightly right */
+        animation: slideIn 0.5s forwards;
+      }
+
+      /* staggered animation */
+      .letter:nth-child(1) { animation-delay: 0s; }
+      .letter:nth-child(2) { animation-delay: 0.1s; }
+      .letter:nth-child(3) { animation-delay: 0.2s; }
+      .letter:nth-child(4) { animation-delay: 0.3s; }
+      .letter:nth-child(5) { animation-delay: 0.4s; }
+      .letter:nth-child(6) { animation-delay: 0.5s; }
+      .letter:nth-child(7) { animation-delay: 0.6s; }
+
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center h-screen bg-black text-white">
+    <div class="text-center">
+      <h1 class="text-5xl font-bold text-red-600 mb-8">
+        <span class="letter">N</span>
+        <span class="letter">E</span>
+        <span class="letter">T</span>
+        <span class="letter">F</span>
+        <span class="letter">L</span>
+        <span class="letter">E</span>
+        <span class="letter">X</span>
+      </h1>
+
+      <a
+        href="/user/login"
+        class="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 rounded text-lg font-medium"
+      >
+        Login
+      </a>
+
+      <p class="mt-6 text-gray-300">
+        Don’t have an account?
+        <a href="/user/register" class="text-red-500 hover:underline">
+          Register here
+        </a>
+      </p>
+    </div>
+  </body>
+</html>

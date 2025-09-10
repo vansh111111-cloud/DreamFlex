@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My List - Netflex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    .nav-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-icon {
+      font-size: 2.5rem; /* bigger icons */
+      color: #888;       /* default grey */
+      transition: color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .nav-link:hover .nav-icon {
+      color: #e50914;     /* Netflix red on hover */
+      transform: scale(1.4) rotate(-5deg); /* slight rotate + grow */
+      filter: drop-shadow(0 0 10px #e50914); /* subtle glow */
+    }
+
+    @media (max-width: 768px) {
+      .nav-icon { font-size: 2rem; }
+      nav { gap: x -6px; }
+    }
+  </style>
+</head>
+<body class="bg-black text-white">
+
+<%- include('partials/navbar') %>
+
+
+
+  <div class="p-6">
+    <h2 class="text-3xl font-bold mb-6">My List</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <% movies.forEach(movie => { %>
+        <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+          <a href="/user/netflex/movie/<%= movie._id %>">
+            <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="w-full h-64 object-cover">
+          </a>
+          <div class="p-4">
+            <h3 class="text-xl font-semibold"><%= movie.title %></h3>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+</body>
+</html>

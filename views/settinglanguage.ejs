@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflix – Language Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white">
+  <%- include('partials/navbar') %>
+
+  <section class="max-w-3xl mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">🌐 Language</h1>
+
+    <form class="bg-gray-900 p-6 rounded-lg shadow space-y-4">
+      <label class="block mb-2 font-semibold">Preferred Language</label>
+      <select class="w-full p-3 bg-gray-800 rounded border border-gray-700">
+        <option>English</option>
+        <option>हिन्दी (Hindi)</option>
+        <option>Español</option>
+        <option>Français</option>
+        <option>Deutsch</option>
+        <option>日本語 (Japanese)</option>
+      </select>
+
+      <button class="bg-red-600 px-6 py-2 rounded font-semibold hover:bg-red-700">Save Language</button>
+    </form>
+  </section>
+</body>
+</html>

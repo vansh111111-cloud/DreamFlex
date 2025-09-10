@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflix – Profile Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white">
+  <!-- Navbar -->
+  <%- include('partials/navbar') %>
+
+  <section class="max-w-3xl mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">👤 Profile Settings</h1>
+
+    <form class="space-y-6 bg-gray-900 p-6 rounded-lg shadow">
+      <div>
+        <label class="block mb-2 font-semibold">Display Name</label>
+        <input type="text" class="w-full p-3 bg-gray-800 rounded border border-gray-700" placeholder="Your name">
+      </div>
+
+      <div>
+        <label class="block mb-2 font-semibold">Profile Picture</label>
+        <input type="file" class="w-full text-gray-300">
+      </div>
+
+      <button class="bg-red-600 px-6 py-2 rounded font-semibold hover:bg-red-700">
+        Save Changes
+      </button>
+    </form>
+  </section>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netflex Clone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-black text-white">
+
+  <!-- Navbar -->
+ <nav class="flex justify-between items-center p-4 bg-gray-900 sticky top-0 z-50">
+  <h1 class="text-2xl font-bold text-red-600">NETFLEX</h1>
+  <ul class="flex gap-6 text-gray-300">
+    <li><a href="/user/netflex/home" class="hover:text-red-500">Home</a></li>
+    <li><a href="/user/netflex/movies" class="hover:text-red-500">Movies</a></li>
+    <li><a href="/user/netflex/search" class="hover:text-red-500">Search</a></li>
+    <li><a href="/user/netflex/tvshows" class="hover:text-red-500">TV Shows</a></li>
+    <li><a href="/user/netflex/mylist" class="hover:text-red-500">My List</a></li>
+    <li><a href="/user/netflex/setting" class="hover:text-red-500">Settings</a></li>
+
+  </ul>
+</nav>
+
+
+  <!-- Hero Section -->
+ <section class="relative h-[500px] bg-cover bg-center" style="background-image:url('https://image.tmdb.org/t/p/original/ugS5FVfCI3RV0ZwZtBV3HAV75OX.jpg')">
+    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-start p-8">
+      <h2 class="text-4xl font-bold">Welcome to NETFLEX</h2>
+      <p class="mt-2 text-lg">Watch trending movies and shows anytime, anywhere.</p>
+      <a href="/user/netflex/movies" class="mt-4 px-4 py-2 bg-red-600 rounded">Watch Now</a>
+    </div>
+  </section>
+
+  <!-- Movie Section Component -->
+  <% function renderSection(title, movies) { %>
+    <section class="p-6">
+      <h3 class="text-xl font-semibold mb-4"><%= title %></h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
+        <% movies.forEach(movie => { %>
+          <div class="bg-gray-800 rounded overflow-hidden hover:scale-105 transform transition duration-300">
+            <img src="<%= movie %>" class="w-full h-full object-cover" alt="Movie Poster" />
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- Popular Movies -->
+  <%=
+    renderSection("🔥 Popular on Netflex", [
+      "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg", /* Spider-Man */
+      "https://image.tmdb.org/t/p/w500/3CxUndGhUcZdt1Zggjdb2HkLLQX.jpg", /* John Wick 4 */
+      "https://image.tmdb.org/t/p/w500/bXL1wlzbO0Vs3zUuX3sHqMEfbVJ.jpg", /* Avatar 2 */
+      "https://image.tmdb.org/t/p/w500/rlTukIwpXj7Hs2a4xTOrDsgohGm.jpg", /* Barbie */
+      "https://image.tmdb.org/t/p/w500/fiVW06jE7z9YnO4trhaMEdclSiC.jpg", /* Fast X */
+      "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg", /* Avatar The Way of Water */
+      "https://image.tmdb.org/t/p/w500/9PFonBhy4cQy7Jz20NpMygczOkv.jpg", /* The Mandalorian */
+      "https://image.tmdb.org/t/p/w500/1X4h40fcB4WWUmIBK0auT4zRBAV.jpg", /* Guardians of the Galaxy 3 */
+      "https://image.tmdb.org/t/p/w500/gbGHezV6yrhua0KfAgwrknSOiIY.jpg", /* The Flash */
+      "https://image.tmdb.org/t/p/w500/f3tq1V2n8dQyuEjr7uY6p7q4ZsL.jpg"  /* Doctor Strange */
+    ])
+  %>
+
+  <!-- Trending Now -->
+  <%=
+    renderSection("⚡ Trending Now", [
+      "https://image.tmdb.org/t/p/w500/9ZlGiEK3vYdYpZdVBk5m0x7WaIm.jpg", /* Oppenheimer */
+      "https://image.tmdb.org/t/p/w500/6oH378KUfCEitzJkm07r97L0RsZ.jpg", /* Stranger Things */
+      "https://image.tmdb.org/t/p/w500/6DrHO1jr3qVrViUO6s6kFiAGM7.jpg", /* Money Heist */
+      "https://image.tmdb.org/t/p/w500/4V6ofLEh9N0XcNdc8ZgnUVSm9pT.jpg", /* Extraction 2 */
+      "https://image.tmdb.org/t/p/w500/A7rdeIuRAiKwprPz7OaIj7sJz.jpg", /* Wednesday */
+      "https://image.tmdb.org/t/p/w500/7p0O4mKYLIhU6fexD2nJZd8Yizk.jpg", /* Breaking Bad */
+      "https://image.tmdb.org/t/p/w500/sGVDk9v8nFqj6fBdX1ThM3tvNVn.jpg", /* The Witcher */
+      "https://image.tmdb.org/t/p/w500/5hoA3jx2JPQRdIgNgXZzLZ8d3mT.jpg", /* Narcos */
+      "https://image.tmdb.org/t/p/w500/2va32apQP97gvUxaMnL5wYt4CRB.jpg", /* Interstellar */
+      "https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg"  /* Inception */
+    ])
+  %>
+
+  <!-- International Hits -->
+  <%=
+    renderSection("🌍 International Hits", [
+      "https://image.tmdb.org/t/p/w500/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg", /* Parasite */
+      "https://image.tmdb.org/t/p/w500/uC6TTUhPpQCmgldGyYveKRAu8JN.jpg", /* Train to Busan */
+      "https://image.tmdb.org/t/p/w500/pFlaoHTZeyNkG83vxsAJiGzfSsa.jpg", /* Demon Slayer */
+      "https://image.tmdb.org/t/p/w500/xGuOF1T3WmPsAcQEQJfnG7Ud9f8.jpg", /* RRR */
+      "https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg", /* Pathaan */
+      "https://image.tmdb.org/t/p/w500/yNb25Q07CXgYdP6tVWhN2s1V7hs.jpg", /* Sacred Games */
+      "https://image.tmdb.org/t/p/w500/8s4h9friP6Ci3adRGahHARVd76E.jpg", /* Squid Game */
+      "https://image.tmdb.org/t/p/w500/3OmUeFZUBq5zIws6ry3r4yvJgGB.jpg", /* Dark */
+      "https://image.tmdb.org/t/p/w500/3GH1tQZHZsoZ0kn4UHdR0XQFAF6.jpg", /* Lupin */
+      "https://image.tmdb.org/t/p/w500/9X7c6GSKP3J0yW4GtK3o0nRtZ0I.jpg"  /* Attack on Titan */
+    ])
+  %>
+
+</body>
+</html>
