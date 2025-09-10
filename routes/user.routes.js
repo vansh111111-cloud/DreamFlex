@@ -390,6 +390,30 @@ catch (err) {
 function makeDirectLink(url) {
   return url.replace("www.dropbox.com", "dl.dropboxusercontent.com").replace("?dl=0", "");
 }
+ // SSE endpoint for progress
+router.get('/upload-progress', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders?.(); // some Express versions need this
+
+  // Keep clients in a global array
+  if (!global.clients) global.clients = [];
+  global.clients.push(res);
+
+  req.on('close', () => {
+    global.clients = global.clients.filter(c => c !== res);
+  });
+});
+
+// Broadcast helper
+function broadcastProgress(percent) {
+  if (global.clients && global.clients.length > 0) {
+    global.clients.forEach(client => {
+      client.write(`data: ${percent}\n\n`);
+    });
+  }
+}
 
      router.post(
   '/netflex/upload',
@@ -437,6 +461,8 @@ console.log("Movie body data:", req.body);
        if (movieFile.size < 150 * 1024 * 1024) {
     // Small file, normal upload
     await dbx.filesUpload({ path: moviePath, contents: movieFile.buffer });
+         console.log(`Upload progress: ${percent}%`);
+          broadcastProgress(percent); // sends updates to frontend via SSE
   } else {
         await uploadLargeFile(dbx, movieFile.buffer, moviePath, (percent) => {
           console.log(`Upload progress: ${percent}%`);
@@ -504,30 +530,6 @@ res.redirect('/user/netflex/home');
 
 }
 );
-// SSE endpoint for progress
-router.get('/upload-progress', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.flushHeaders?.(); // some Express versions need this
-
-  // Keep clients in a global array
-  if (!global.clients) global.clients = [];
-  global.clients.push(res);
-
-  req.on('close', () => {
-    global.clients = global.clients.filter(c => c !== res);
-  });
-});
-
-// Broadcast helper
-function broadcastProgress(percent) {
-  if (global.clients && global.clients.length > 0) {
-    global.clients.forEach(client => {
-      client.write(`data: ${percent}\n\n`);
-    });
-  }
-}
 
 router.post('/netflex/movie/:movieId/season/:seasonNumber/complete', authenticate, async (req, res) => {
   try {
