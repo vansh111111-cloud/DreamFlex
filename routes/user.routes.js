@@ -458,7 +458,7 @@ console.log("Movie body data:", req.body);
         console.log("Buffer type:", Buffer.isBuffer(movieFile.buffer));
   console.log("Buffer length:", movieFile.buffer.length);
         const moviePath = "/movies/" + Date.now() + "-" + movieFile.originalname;
-       if (movieFile.size < 150 * 1024 * 1024) {
+       if (movieFile.size < 10 * 1024 * 1024) {
         let simulatedPercent = 0;
   const interval = setInterval(() => {
     if (simulatedPercent < 90) {
