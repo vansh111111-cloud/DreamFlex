@@ -291,7 +291,7 @@
         </div>
       </section>
     <% } %>
-   <!-- Admin Controls for Series Completion -->
+<!-- Admin Controls for Series Completion -->
 <% if (
   user &&
   (user.role === 'admin' || (movie.uploadedBy && user.userId === movie.uploadedBy.toString()))
@@ -323,6 +323,10 @@
         <% } %>
       <% } %>
     <% }) %>
+
+  <% } %>   <!-- closes movie.isSeriesCompleted check -->
+
+<% } %>     <!-- closes the OUTER admin check -->
 
 
     <form action="/user/netflex/movie/<%= movie._id %>/complete-series" method="POST">
