@@ -414,7 +414,37 @@ function broadcastProgress(percent) {
     });
   }
 }
+async function uploadLargeFile(dbx, fileBuffer, filePath, onProgress) {
+  const CHUNK_SIZE = 8 * 1024 * 1024; // 8MB chunks
+  let offset = 0;
+  let sessionId = null;
 
+  while (offset < fileBuffer.length) {
+    const chunk = fileBuffer.slice(offset, offset + CHUNK_SIZE);
+
+    if (offset === 0) {
+      const response = await dbx.filesUploadSessionStart({ contents: chunk });
+      sessionId = response.result.session_id;
+    } else {
+      await dbx.filesUploadSessionAppendV2({
+        cursor: { session_id: sessionId, offset },
+        contents: chunk,
+      });
+    }
+
+    offset += chunk.length;
+
+    if (onProgress) {
+      const percent = Math.round((offset / fileBuffer.length) * 100);
+      onProgress(percent);
+    }
+  }
+
+  await dbx.filesUploadSessionFinish({
+    cursor: { session_id: sessionId, offset },
+    commit: { path: filePath, mode: 'add', autorename: true },
+  });
+    }
      router.post(
   '/netflex/upload',
   requireCreator,
