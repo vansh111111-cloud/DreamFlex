@@ -307,20 +307,22 @@
       <% if (season.episodes.length === 0) { %>
         <p class="text-gray-500 italic">No episodes found for this season.</p>
       <% } %>
+
       <% if (
-  user &&
-  (user.role === 'admin' || (movie.uploadedBy && user.userId === movie.uploadedBy.toString()))
-) { %>
-      <% if (season.isCompleted) { %>
-        <p class="text-gray-500 italic">✔ Season <%= season.seasonNumber %> Completed</p>
-      <% } else { %>
-        <form action="/user/netflex/movie/<%= movie._id %>/season/<%= season.seasonNumber %>/complete" method="POST">
-          <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg mt-2">
-            Complete Season
-          </button>
-        </form>
+        user &&
+        (user.role === 'admin' || (movie.uploadedBy && user.userId === movie.uploadedBy.toString()))
+      ) { %>
+        <% if (season.isCompleted) { %>
+          <p class="text-gray-500 italic">✔ Season <%= season.seasonNumber %> Completed</p>
+        <% } else { %>
+          <form action="/user/netflex/movie/<%= movie._id %>/season/<%= season.seasonNumber %>/complete" method="POST">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg mt-2">
+              Complete Season
+            </button>
+          </form>
+        <% } %>
       <% } %>
-    <% }); %>
+    <% }) %>
 
 
     <form action="/user/netflex/movie/<%= movie._id %>/complete-series" method="POST">
