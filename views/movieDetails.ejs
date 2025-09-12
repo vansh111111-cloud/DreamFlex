@@ -119,25 +119,47 @@
             <i class="fa-solid fa-download"></i> Download
           </a>
 
-<% if (user && (user.role === 'admin' || user.userId && movie.uploadedBy && user.userId === movie.uploadedBy.toString())) { %>
+
+<% if (user && (user.role === 'admin' || (user.userId && movie.uploadedBy && user.userId === movie.uploadedBy.toString()))) { %>
+  
   <% if (movie.type === 'series') { %>
-    <!-- Delete Current Episode -->
-    <form action="/user/netflex/movie/<%= movie._id %>/episode/<%= currentEpisode.episodeNumber %>/delete" method="POST" onsubmit="return confirm('Delete this episode?');">
-      <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg mt-2">
-        Delete 
+    <% movie.seasonsUrl.forEach(season => { %>
+      <h3 class="text-lg font-bold mt-4">Season <%= season.seasonNumber %></h3>
+      <% season.episodes.forEach(episode => { %>
+        <div class="flex items-center justify-between bg-gray-800 p-2 rounded-lg mt-2">
+          <span>Episode <%= episode.episodeNumber %>: <%= episode.title %></span>
+
+          <form action="/user/netflex/movie/<%= movie._id %>/season/<%= season.seasonNumber %>/episode/<%= episode.episodeNumber %>/delete"
+                method="POST" 
+                onsubmit="return confirm('Delete this episode?');">
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm">
+              Delete Episode
+            </button>
+          </form>
+        </div>
+      <% }) %>
+    <% }) %>
+
+    <!-- Delete entire series -->
+    <form action="/user/netflex/movie/<%= movie._id %>/delete" method="POST"
+          onsubmit="return confirm('Delete the entire series?');" class="mt-4">
+      <button type="submit" class="bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-lg">
+        Delete Entire Series
       </button>
     </form>
+
   <% } else { %>
-    <!-- Delete entire Movie/Song -->
-    <form action="/user/netflex/movie/<%= movie._id %>/delete" method="POST" onsubmit="return confirm('Delete this video?');">
+    <!-- Delete movie or song -->
+    <form action="/user/netflex/movie/<%= movie._id %>/delete" method="POST"
+          onsubmit="return confirm('Delete this video?');">
       <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg mt-2">
-        Delete 
+        Delete Movie/Song
       </button>
     </form>
   <% } %>
-<% } %>
 
-        </div>
+<% } %>
+        
 
         <!-- Compact tags & small meta area for mobile -->
         <div class="mt-2 text-gray-400 text-sm line-clamp-3">
@@ -328,7 +350,24 @@
 <% } %>
   
 
+<% if (user && (user.role === 'admin' || (user.userId && movie.uploadedBy && user.userId === movie.uploadedBy.toString()))) { %>
+  
+  <% if (movie.type === 'series') { %>
+    
+    <% if (!movie.isSeriesCompleted) { %>
+      <form action="/user/netflex/movie/<%= movie._id %>/complete-series" method="POST"
+            onsubmit="return confirm('Mark the entire series as completed?');">
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mt-3">
+          ✅ Mark Series as Completed
+        </button>
+      </form>
+    <% } else { %>
+      <p class="text-green-500 font-semibold mt-3">✔ This series is completed</p>
+    <% } %>
 
+  <% } %>
+
+<% } %>
 
     </div>
     <!-- Actress Photos -->
