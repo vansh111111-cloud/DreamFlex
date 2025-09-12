@@ -822,42 +822,57 @@ let lastSeason = movie.seasonsUrl[movie.seasonsUrl.length - 1];
   }
 );
 
+// Delete Episode from a Series
 router.post(
-  '/netflex/movie/:movieId/episode/:episodeNumber/delete',
+  '/netflex/movie/:movieId/season/:seasonNumber/episode/:episodeNumber/delete',
   requireCreator,
   async (req, res) => {
     try {
-      const { movieId, episodeNumber } = req.params;
+      const { movieId, seasonNumber, episodeNumber } = req.params;
       const movie = await Movie.findById(movieId);
 
-      if (!movie || movie.type !== 'series') return res.status(400).send('Invalid series');
+      if (!movie || movie.type !== 'series') 
+        return res.status(400).send('Invalid series');
 
       if (
         req.user.role !== 'admin' &&
         movie.uploadedBy.toString() !== req.user.userId
       ) return res.status(403).send('Not allowed');
 
-      // Remove the episode
-      movie.seasonsUrl[seasonIndex].episodes = movie.seasonsUrl[seasonIndex].episodes.filter(
-  ep => ep.episodeNumber != episodeNumber
-);
+      // find the season
+      const seasonIndex = movie.seasonsUrl.findIndex(
+        s => s.seasonNumber == seasonNumber
+      );
+      if (seasonIndex === -1) 
+        return res.status(404).send('Season not found');
 
-// If no episodes left in this season, remove the season
-if (movie.seasonsUrl[seasonIndex].episodes.length === 0) {
-  movie.seasonsUrl.splice(seasonIndex, 1); // remove the whole season
-}
+      // remove episode
+      movie.seasonsUrl[seasonIndex].episodes =
+        movie.seasonsUrl[seasonIndex].episodes.filter(
+          ep => ep.episodeNumber != episodeNumber
+        );
 
-// If no seasons left at all, delete the series
-if (movie.seasonsUrl.length === 0) {
-  await Movie.findByIdAndDelete(movie._id);
-  return res.redirect('/user/netflex/home');
-}
+      // if season empty → remove season
+      if (movie.seasonsUrl[seasonIndex].episodes.length === 0) {
+        movie.seasonsUrl.splice(seasonIndex, 1);
+      }
+
+      // if no seasons left → delete entire series
+      if (movie.seasonsUrl.length === 0) {
+        await Movie.findByIdAndDelete(movie._id);
+        return res.redirect('/user/netflex/home');
+      }
+
+      await movie.save();
+      res.redirect(`/user/netflex/movie/${movieId}`);
     } catch (err) {
       console.error(err);
       res.status(500).send('Failed to delete episode');
     }
   }
 );
+
+// Delete Movie/Song/Entire Series
 router.post(
   '/netflex/movie/:movieId/delete',
   requireCreator,
@@ -879,6 +894,7 @@ router.post(
     }
   }
 );
+
 router.post("/netflex/movie/:movieId/complete-series", authenticate, requireCreator, async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.movieId);
