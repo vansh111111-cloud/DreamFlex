@@ -24,6 +24,29 @@ const fs = require("fs");
 const fetch = require('node-fetch');
 
 
+
+// ✅ SSE for progress
+let clients = [];
+router.get('/progress', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+
+  clients.push(res);
+
+  req.on('close', () => {
+    clients = clients.filter(c => c !== res);
+  });
+});
+
+function broadcastProgress(percent) {
+  clients.forEach(res => {
+    res.write(`data: ${percent}\n\n`);
+  });
+}
+
+// so your upload route
   const dbx = new Dropbox({
     
     accessToken: process.env.DROPBOX_ACCESS_TOKEN,
@@ -531,7 +554,7 @@ let movieData = {
   uploadedBy: req.user.userId
 };
 
-if (req.body.type !== "series") {
+if (req.body.type === "movie" || req.body.type === "song" ) {
   movieData.movieUrl = movieUrl;
 }
 
