@@ -41,7 +41,7 @@
   <div class="max-w-3xl mx-auto p-6 bg-gray-900 rounded-lg shadow-lg mt-8">
     <h2 class="text-2xl font-bold mb-6">Upload New Movie</h2>
 
-    <form action="/user/netflex/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
+    <form id="uploadForm" action="/user/netflex/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
       
       <!-- Title -->
       <div>
@@ -159,8 +159,9 @@
         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-lg">Upload Movie</button>
       </div>
 
+    
     </form>
-    <div class="w-full bg-gray-200 rounded-full mt-4">
+<div class="w-full bg-gray-200 rounded-full mt-4">
   <div id="progressBar" 
        class="bg-blue-500 text-xs leading-none py-1 text-center text-white rounded-full" 
        style="width: 0%">
@@ -172,8 +173,9 @@
   const form = document.getElementById('uploadForm');
   const progressBar = document.getElementById('progressBar');
 
-  // Step 1: Open SSE for progress updates
-  const eventSource = new EventSource('/upload-progress');
+  // ✅ Step 1: Open SSE for progress updates (route matches backend)
+  const eventSource = new EventSource('/progress');
+
   eventSource.onmessage = function (event) {
     const percent = parseInt(event.data, 10);
     progressBar.style.width = percent + '%';
@@ -186,12 +188,12 @@
     }
   };
 
-  // Step 2: Intercept form submit
+  // ✅ Step 2: Intercept form submit and send to backend upload route
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     const formData = new FormData(form);
 
-    fetch('/netflex/upload', {
+    fetch('/user/netflex/upload', {
       method: 'POST',
       body: formData
     }).catch(err => alert("Upload failed: " + err.message));
