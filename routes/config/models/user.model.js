@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema({
             enum: ['user', 'creator', 'admin'],
             default: 'user'
         },
+        profilePicture: {
+            type: String,
+            default: null,
+          },
+          recentlyWatched: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }], // <- NEW
          myList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }] ,default: [],
          googleId: { type: [String] }
 })

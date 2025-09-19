@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>tvshows - DreamFlex</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen">
+
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-6xl mx-auto p-6">
+    <h2 class="text-3xl font-bold text-red-600 mb-6">tvshows</h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <% if (tvshows.length > 0) { %>
+        <% tvshows.forEach(show => { %>
+          <a href="/user/netflex/movie/<%= show._id %>" 
+             class="block bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform">
+            <img src="<%= show.posterUrl %>" 
+                 alt="<%= show.title %>" 
+                 class="w-full h-64 object-cover">
+            <div class="p-4">
+              <h3 class="text-lg font-bold text-white"><%= show.title %></h3>
+              <p class="text-sm text-gray-400"><%= show.year %></p>
+            </div>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <p class="text-gray-400">No tvshows found.</p>
+      <% } %>
+    </div>
+  </div>
+<%- include('partials/bottomnav') %>
+</body>
+</html>

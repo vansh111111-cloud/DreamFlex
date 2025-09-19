@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Profile — NETFLEX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #141414;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #1f1f1f;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #e50914;
+      font-size: 2rem;
+      text-shadow: 0 0 10px #e50914;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 8px;
+      background: #333;
+      color: #fff;
+      font-size: 1rem;
+    }
+    input:focus, select:focus {
+      outline: 2px solid #e50914;
+    }
+    .gmail-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #1e90ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .gmail-link:hover {
+      text-decoration: underline;
+    }
+    .btn {
+      width: 100%;
+      background: #e50914;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #f6121d;
+      box-shadow: 0 0 20px #e50914;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Update Profile</h1>
+    <form action="/user/netflex/me/id/update" method="POST">
+      <!-- Username -->
+      <label for="username">Update Username</label>
+      <input type="text" id="username" name="username" placeholder="Enter new username">
+
+      <!-- Gmail -->
+      <label>Update Gmail</label>
+      <a href="/user/netflex/me/id/gmail" class="gmail-link">Click here to update Gmail</a>
+
+      <!-- Password -->
+      <label for="currentPassword">Current Password</label>
+      <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password">
+
+      <label for="newPassword">New Password</label>
+      <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
+
+      <!-- Role -->
+      <label for="role">Update Role</label>
+      <select id="role" name="role">
+        <option value="buyer">Buyer</option>
+        <option value="seller">Seller</option>
+      </select>
+
+      <!-- Save Button -->
+      <button type="submit" class="btn">Save</button>
+    </form>
+  </div>
+</body>
+</html>

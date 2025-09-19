@@ -49,7 +49,7 @@
        <% 
   let videoSrc = "";
   if (movie) {
-    if (movie.type === "movie" && movie.movieUrl) {
+    if ((movie.type === "movie" || movie.type === "song") && movie.movieUrl) {
       videoSrc = movie.movieUrl.replace('?dl=0','?raw=1').replace('?dl=1','?raw=1');
     } else if (movie.type === "series" && movie.seasonsUrl && movie.seasonsUrl.length > 0) {
       const firstEpisode = movie.seasonsUrl[0].episodes[0];
@@ -520,6 +520,6 @@
       };
     })();
   </script>
-
+<%- include('partials/bottomnav') %>
 </body>
 </html>

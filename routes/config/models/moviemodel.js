@@ -29,7 +29,7 @@ const movieSchema = new mongoose.Schema({
   country: { type: String },                            
   genre: {
       type: [String],
-      enum: ["Drama", "Action", "Comedy", "Horror", "Romance", "Sci-Fi", "Thriller", "Adventure", "Fantasy"],
+      enum: ["Drama", "Action","tvshows", "Comedy", "Horror", "Romance", "Sci-Fi", "Thriller", "Adventure", "Fantasy"],
       default: []
     },                        
   audioLanguages: { type: [String], default: ['English'] },

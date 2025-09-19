@@ -22,7 +22,7 @@ const router = express.Router();
 const { Dropbox } = require("dropbox");
 const fs = require("fs");
 const fetch = require('node-fetch');
-
+const dbx = require("./config/dropbox");
 
 
 // ✅ SSE for progress
@@ -46,24 +46,6 @@ function broadcastProgress(percent) {
   });
 }
 
-// so your upload route
-  const dbx = new Dropbox({
-    
-    accessToken: process.env.DROPBOX_ACCESS_TOKEN,
-    fetch: fetch
-  });
-
-  // Exchange refresh token for access token
-
-
-(async () => {
-  try {
-    const account = await dbx.usersGetCurrentAccount();
-    console.log("Connected as:", account.result.name.display_name);
-  } catch (err) {
-    console.error("Dropbox auth failed:", err);
-  }
-})();
 
 router.use(cookieParser());
 const { body ,validationResult } = require('express-validator');
@@ -181,7 +163,7 @@ router.get('/home', (req,res) => {
 router.get('/netflex/home',authenticate, async (req, res) => {
   try {
     const movies = await Movie.find(); 
-    res.render('netflexhome', { role: req.user.role, movies });; 
+    res.render('netflexhome', { role: req.user.role, movies,user:req.user });; 
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
@@ -192,45 +174,52 @@ router.get('/netflex/home',authenticate, async (req, res) => {
 
 
 
-router.get('/netflex/tvshows',authenticate, (req, res) => {
-  res.render('netflextvshows',{ role: req.user.role}); 
-});
 
-router.get('/netflex/setting/profile', (req, res) => {
-  res.render('settingprofile'); 
+router.get("/netflex/tvshows",authenticate , async (req, res) => {
+  try {
+    const tvshows = await Movie.find({ genre: "tvshows" });
+    res.render("tvshows",{ role: req.user.role , tvshows,user:req.user });
+  } catch (err) {
+    console.error("Error fetching tvshows:", err);
+    res.status(500).send("Failed to fetch tvshows");
+  }
 });
-router.get('/netflex/setting/admin', (req, res) => {
-  res.render('settingadmin'); 
+router.get('/netflex/setting/profile',authenticate, (req, res) => {
+  res.render('settingprofile',{role: req.user.role ,user:req.user}); 
 });
-router.get('/netflex/setting/creator', (req, res) => {
-  res.render('settingcreator'); 
+router.get('/netflex/setting/admin',authenticate, (req, res) => {
+  res.render('settingadmin',{ role: req.user.role ,user:req.user} ); 
 });
-router.get('/netflex/setting/security', (req, res) => {
-  res.render('settingsecurity'); 
+router.get('/netflex/setting/creator',authenticate, (req, res) => {
+  res.render('settingcreator',{ role: req.user.role,user:req.user}); 
 });
-router.get('/netflex/setting/subscription', (req, res) => {
-  res.render('settingsubscription'); 
+router.get('/netflex/setting/security',authenticate, (req, res) => {
+  res.render('settingsecurity',{ role: req.user.role,user:req.user}); 
 });
-router.get('/netflex/setting/notifications', async (req, res) => {
+router.get('/netflex/setting/subscription', authenticate,(req, res) => {
+  res.render('settingsubscription',{ role: req.user.role,user:req.user}); 
+});
+router.get('/netflex/setting/notifications',authenticate, async (req, res) => {
     try {
         const notifications = await Notification.findOne({ userId: req.user._id })
-        res.render('settingnotifications', { notifications });
+        .populate("userId", "username email"); 
+        res.render('settingnotifications',{ role: req.user.role,  notifications ,user:req.user});
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
 
     }
 } );
-router.get('/netflex/setting/language', (req, res) => {
-  res.render('settinglanguage'); 
+router.get('/netflex/setting/language', authenticate,(req, res) => {
+  res.render('settinglanguage',{ role: req.user.role,user:req.user}); 
 });
-router.get('/netflex/setting/playback', (req, res) => {
-  res.render('settingplayback'); 
+router.get('/netflex/setting/playback', authenticate,(req, res) => {
+  res.render('settingplayback',{ role: req.user.role,user:req.user}); 
 });
-router.get('/netflex/setting/devices', (req, res) => {
-  res.render('settingdevices'); 
+router.get('/netflex/setting/devices',authenticate, (req, res) => {
+  res.render('settingdevices',{ role: req.user.role,user:req.user}); 
 });
-router.get('/netflex/setting/help', (req, res) => {
-  res.render('settinghelp'); 
+router.get('/netflex/setting/help',authenticate, (req, res) => {
+  res.render('settinghelp',{ role: req.user.role,user:req.user}); 
 });
 
 router.get('/register', (req, res) =>
@@ -381,7 +370,7 @@ router.get('/login', (req, res) =>
          
 
 router.get  ('/netflex/setting',authenticate, (req,res) => {
-  res.render('netflexsetting', {role: req.user.role});
+  res.render('netflexsetting', {role: req.user.role,user:req.user});
 });
 // Middleware to check role
 function requireCreator(req, res, next) {
@@ -403,7 +392,7 @@ function requireCreator(req, res, next) {
 
 router.get('/netflex/upload', requireCreator, (req, res) => {
 try {
-    res.render('netflexupload',{role: req.user.role}); // <- view file
+    res.render('netflexupload',{role: req.user.role,user:req.user}); // <- view file
  }
 catch (err) {
       console.error("Google login error:", err);}}
@@ -640,7 +629,7 @@ router.post('/netflex/movie/:movieId/season/:seasonNumber/complete', authenticat
     	        genre: { $in: movie.genre }
     	          }).limit(6);
     
-  res.render('movieDetails', { movie , role: req.user.role,suggestedMovies, user: req.user ,currentEpisode , season: movie.seasonsUrl})
+  res.render('movieDetails', { movie ,user:req.user, role: req.user.role,suggestedMovies, user: req.user ,currentEpisode , season: movie.seasonsUrl})
 });
      
 router.post('/netflex/mylist/:movieId',authenticate, async (req, res) => {
@@ -649,8 +638,9 @@ router.post('/netflex/mylist/:movieId',authenticate, async (req, res) => {
     if (!user.myList.includes(req.params.movieId)) {
       user.myList.push(req.params.movieId);
       await user.save();
+      const movies = user.myList;
     }
-    res.redirect('/user/netflex/mylist');
+    res.render('netflexmylist', { user: req.user,role:req.user.role ,movies});
   } catch (err) {
     console.error('Error adding to My List:', err);
     res.status(500).send('Failed to add to My List');
@@ -662,7 +652,7 @@ router.get('/netflex/mylist', authenticate, async (req, res) => {
   try {
     const user = await userModel.findById(req.user.userId).populate('myList');
     console.log("Fetched My List:", user.myList);
-    res.render('netflexmylist', { movies: user.myList || [], role: req.user.role }); 
+    res.render('netflexmylist', { movies: user.myList || [],user:req.user, role: req.user.role }); 
   } catch (err) {
     console.error('Error fetching My List:', err);
     res.status(500).send('Failed to load My List'); 
@@ -682,7 +672,7 @@ router.get('/netflex/search',authenticate, async (req, res) => {
       });
     }
 
-    res.render("netflexsearch", { movies,query, role: req.user.role  }); 
+    res.render("netflexsearch", { movies,query, role: req.user.role,user:req.user  }); 
   } catch (err) {
     console.error("Error searching movies:", err);
     res.status(500).send("Failed to search movies");
@@ -919,4 +909,13 @@ router.post("/netflex/movie/:movieId/complete-series", authenticate, requireCrea
   }
 });
 
- module.exports = router;
+router.get('/netflex/profile/update', authenticate, async (req, res) => {
+  res.render('profileupdate', {
+    user: req.user,   // full user object, so you can access user.username, user.role etc.
+    role: req.user.role
+  });
+});
+module.exports = {
+  authenticate ,router
+};
+ 

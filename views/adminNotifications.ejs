@@ -14,9 +14,10 @@
       <% requests.forEach(req => { %>
         <li class="p-4 bg-gray-800 rounded-lg shadow flex justify-between items-center">
           <div>
-            <p><strong>User:</strong> <%= req.userId.username %></p>
-            <p><strong>Reason:</strong> <%= req.reason %></p>
-            <p><strong>Status:</strong> <%= req.status %></p>
+
+            <p><strong>User:</strong> <%= req.userId ? req.userId.username : "Unknown User" %></p>
+            <p><strong>Reason:</strong> <%= req.reason || "No reason provided" %></p>
+            <p><strong>Status:</strong> <%= req.status || "N/A" %></p>
           </div>
           <div class="space-x-2">
             <form action="/admin/netflex/setting/notifications/<%= req._id %>/approve" method="POST" class="inline">

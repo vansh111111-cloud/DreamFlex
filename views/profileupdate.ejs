@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DreamFlex — Update Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root{
+      --bg-1: #0b0b0f;
+      --bg-2: #0f0f13;
+      --glass: rgba(255,255,255,0.03);
+      --accent: #e50914; /* Netflix red */
+      --neon: rgba(229,9,20,0.18);
+      --muted: #bdbdbd;
+      --card: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.06);
+    }
+
+    /* Animated cosmic background */
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color:#fff;
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(229,9,20,0.06), transparent 8%),
+                  radial-gradient(1000px 500px at 90% 80%, rgba(14,170,255,0.03), transparent 8%),
+                  linear-gradient(180deg,var(--bg-1), var(--bg-2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      overflow:auto;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Futuristic container / glass panel */
+    .stage {
+      width:100%;
+      max-width:720px;
+      border-radius:18px;
+      padding:28px;
+      box-sizing:border-box;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 40px var(--neon);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px) saturate(120%);
+      position:relative;
+      overflow: hidden;
+    }
+
+    /* Top chromed logo */
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .logo {
+      font-weight:800;
+      letter-spacing:1px;
+      font-size:1.4rem;
+      color:var(--accent);
+      text-shadow: 0 0 18px rgba(229,9,20,0.35);
+      transform: translateZ(0);
+    }
+    .tag {
+      color:var(--muted);
+      font-size:0.88rem;
+      opacity:0.9;
+    }
+
+    h1 {
+      margin:0 0 20px 0;
+      font-size:1.6rem;
+      color:#fff;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px 20px;
+    }
+
+    label {
+      display:block;
+      margin-bottom:8px;
+      color:var(--muted);
+      font-size:0.85rem;
+    }
+
+    .field {
+      display:flex;
+      flex-direction:column;
+    }
+
+    input[type="text"], input[type="password"], select {
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      color:#fff;
+      font-size:1rem;
+      outline:none;
+      transition: box-shadow .18s, transform .12s;
+      -webkit-appearance:none;
+    }
+    input::placeholder { color: rgba(255,255,255,0.35); }
+
+    input:focus, select:focus {
+      box-shadow: 0 0 18px rgba(229,9,20,0.12);
+      border-color: rgba(229,9,20,0.55);
+    }
+
+    /* Gmail link styled as modern pill */
+    .gmail-link {
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:999px;
+      text-decoration:none;
+      color:#061a2b;
+      background: linear-gradient(90deg,#ffb3b9,var(--accent));
+      font-weight:700;
+      box-shadow: 0 6px 18px rgba(229,9,20,0.14);
+      margin-top:6px;
+      transition: transform .12s;
+    }
+    .gmail-link:hover { transform: translateY(-3px); }
+
+    /* Password area spans both columns */
+    .wide { grid-column: 1 / -1; }
+
+    .controls {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:6px;
+    }
+
+    .btn {
+      display:inline-block;
+      border: none;
+      padding:12px 18px;
+      border-radius:12px;
+      background: linear-gradient(90deg, var(--accent), #ff6b6b);
+      color:#fff;
+      font-weight:700;
+      font-size:1rem;
+      cursor:pointer;
+      box-shadow: 0 8px 30px rgba(229,9,20,0.18);
+      transition: transform .12s, box-shadow .12s;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn.secondary {
+      background: transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+      box-shadow:none;
+      font-weight:600;
+    }
+
+    .meta {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .small { font-size:0.85rem; color:var(--muted); }
+
+    .note {
+      margin-top:12px;
+      color:rgba(255,255,255,0.7);
+      font-size:0.9rem;
+    }
+
+    /* Password error */
+    .error {
+      color:#ff8a8a;
+      font-size:0.9rem;
+      margin-top:8px;
+      display:none;
+    }
+
+    /* Responsive */
+    @media (max-width:720px){
+      .grid { grid-template-columns: 1fr; }
+      .brand { gap:8px; flex-direction:row; justify-content:space-between; align-items:center; }
+      .logo { font-size:1.1rem; }
+    }
+  </style>
+</head>
+<body>
+<%- include('partials/backbutton') %>
+  <div class="stage" role="main" aria-labelledby="pageTitle">
+    <div class="brand" aria-hidden="false">
+      <div>
+        <div class="logo">DreamFlex</div>
+        <div class="tag">Profile • Settings</div>
+      </div>
+      <div class="meta">
+        <span class="small">Signed in as <strong><%= (user && (user.username || user.email)) || 'You' %></strong></span>
+      </div>
+    </div>
+
+    <h1 id="pageTitle">Update Profile</h>
+
+    <!-- Form 1: Profile Photo -->
+    <form action="/user/netflex/me/<%= ((user && (user._id || user.userId)) || '') %>/photo"
+          method="POST" enctype="multipart/form-data">
+      <label>Profile Photo</label>
+      <% if (user && user.profilePicture) { %>
+        <img src="<%= user.profilePicture %>" alt="Profile Photo"
+             style="width:100px;height:100px;border-radius:50%;margin-bottom:10px;">
+      <% } else { %>
+        <p>No profile photo uploaded yet</p>
+      <% } %>
+      <input type="file" name="profilePicture" accept="image/*" required>
+      <button type="submit" class="btn">Upload New Photo</button>
+    </form>
+    
+    
+    <!-- Form 2: Username + Password -->
+    <form id="profileForm" 
+          action="/user/netflex/me/<%= ((user && (user._id || user.userId)) || '') %>/update"
+          method="POST">
+    
+      <label for="username">Update Username</label>
+      <input type="text" id="username" name="username" value="<%= user.username %>">
+    
+      <label>Current Role: <strong><%= user.role %></strong></label>
+      <a href="/user/netflex/me/<%= ((user && (user._id || user.userId)) || '') %>/role" class="gmail-link">Click here to update Role</a>
+    
+      <label>Update Gmail</label>
+      <a href="/user/netflex/me/<%= ((user && (user._id || user.userId)) || '') %>/gmail" class="gmail-link">Click here to update Gmail</a>
+    
+      <label for="currentPassword">Current Password</label>
+      <input type="password" id="currentPassword" name="currentPassword">
+    
+      <label for="newPassword">New Password</label>
+      <input type="password" id="newPassword" name="newPassword">
+    
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword">
+    
+      <button type="submit" class="btn">Save</button>
+    </form>
+  </div>
+
+  <script>
+    // Small client-side UX: show/hide passwords and validate confirmation
+    (function(){
+      const form = document.getElementById('profileForm');
+      const newPw = document.getElementById('newPassword');
+      const confirmPw = document.getElementById('confirmPassword');
+      const curPw = document.getElementById('currentPassword');
+      const pwError = document.getElementById('pwError');
+      const showBox = document.getElementById('showPasswords');
+
+      function setError(show, text){
+        pwError.style.display = show ? 'block' : 'none';
+        pwError.textContent = text || 'Passwords do not match.';
+      }
+
+      form.addEventListener('submit', function(e){
+        // If user intends to change password (any password field filled) -> validate
+        const changing = newPw.value || confirmPw.value || curPw.value;
+        if(changing){
+          if(newPw.value !== confirmPw.value){
+            e.preventDefault();
+            setError(true, 'New password and confirmation do not match.');
+            confirmPw.focus();
+            return false;
+          }
+          // simple length check (optional)
+          if(newPw.value && newPw.value.length > 0 && newPw.value.length < 6){
+            e.preventDefault();
+            setError(true, 'New password must be at least 6 characters.');
+            newPw.focus();
+            return false;
+          }
+        }
+        // otherwise allow submit
+        setError(false);
+      });
+
+      showBox.addEventListener('change', function(){
+        const t = this.checked ? 'text' : 'password';
+        [newPw, confirmPw, curPw].forEach(inp => inp.type = t);
+      });
+    })();
+  </script>
+</body>
+</html>

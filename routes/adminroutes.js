@@ -25,14 +25,17 @@ function isAdmin(req, res, next) {
     } catch (error) {
         return res.status(400).send('Invalid token.');
     } }
-    routerr.get('/netflex/setting/notifications', isAdmin, async (req, res) => {
-        try {
-            const requests = await CreatorRequest.find({ status: 'pending' }).populate('userId');
-            res.render('adminNotifications', { requests });
-        } catch (error) {
-            res.status(500).json({ message: 'Internal server error' });
-        } 
 
+    routerr.get('/netflex/setting/notifications', isAdmin, async (req, res) => {
+      try {
+        const requests = await CreatorRequest.find({ status: 'pending' })
+          .populate("userId", "username email"); // ✅ complete chain
+    
+        res.render('adminNotifications', { requests });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      }
     });
     routerr.post('/netflex/setting/notifications/:id/approve', isAdmin, async (req, res) => {
         try {

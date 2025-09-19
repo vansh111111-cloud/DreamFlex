@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= user.username %> - Profile</title>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white">
+  <div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-4">Welcome, <%= user.username %> 👋</h1>
+
+    <% if (user.profilePicture) { %>
+      <img src="<%= user.profilePicture %>" alt="Profile Picture" class="w-32 h-32 rounded-full mb-4">
+    <% } %>
+
+    <h2 class="text-xl mb-2">My List</h2>
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <% user.myList.forEach(movie => { %>
+        <li class="bg-gray-800 p-2 rounded">
+          <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="w-full">
+          <p class="mt-2"><%= movie.title %></p>
+        </li>
+      <% }) %>
+    </ul>
+
+    <h2 class="text-xl mt-6 mb-2">Continue Watching</h2>
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <% continueWatching.forEach(movie => { %>
+        <li class="bg-gray-800 p-2 rounded">
+          <p><%= movie.title %></p>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</body>
+</html>
