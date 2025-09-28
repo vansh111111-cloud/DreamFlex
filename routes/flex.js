@@ -6,7 +6,7 @@ const { Dropbox } = require('dropbox');
 const fetch = require('node-fetch');
 const FlexFile = require('./config/models/FlexFile'); // adjust path if needed
 const cookieParser = require('cookie-parser');
-
+ const { authenticate , requireCreator, uploadLargeFile} = require("./middleware");
 const DROPBOX_ACCESS_TOKEN = process.env.DROPBOX_ACCESS_TOKEN;
 if (!DROPBOX_ACCESS_TOKEN) {
   console.warn('No DROPBOX_ACCESS_TOKEN in env — Dropbox upload will fail');
@@ -107,7 +107,7 @@ function createFlexRouter(io) {
   // try to require authenticate from your user.routes
   let authenticate;
   try {
-    authenticate = require('./user.routes').authenticate;
+    authenticate = require('./middleware').authenticate;
   } catch (e) {
     // fallback dummy (NOT recommended for production)
     authenticate = (req, res, next) => { req.user = { userId: req.cookies?.userId || null, username: req.cookies?.username || 'anon', role: 'user' }; next(); };
@@ -148,10 +148,19 @@ function createFlexRouter(io) {
         }
       }
 
-      busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-        // this file is a readable stream. We'll pass it to uploadStreamToDropbox
-        fileFieldInfo = { fieldname, filename, encoding, mimetype, size: req.headers['content-length'] ? parseInt(req.headers['content-length'], 10) : null };
-        const destPath = `/flex/${Date.now()}-${filename.replace(/\s+/g, '_')}`;
+     // ✅ FIXED signature
+      busboy.on('file', (fieldname, file, info) => {
+        const { filename, encoding, mimeType } = info;
+
+        if (!filename) {
+          file.resume(); // skip if no filename
+          return;
+        }
+
+        fileFieldInfo = { fieldname, filename, encoding, mimeType };
+
+        const safeName = filename.replace(/\s+/g, "_");
+        const destPath = `/flex/${Date.now()}-${safeName}`;
 
         // create async iterator from busboy file stream
         const asyncIter = chunkGenerator(file, null); // we don't know file size precisely per-file here

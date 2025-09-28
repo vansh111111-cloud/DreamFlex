@@ -22,7 +22,12 @@ const router = express.Router();
 const { Dropbox } = require("dropbox");
 const fs = require("fs");
 const fetch = require('node-fetch');
-const dbx = require("./config/dropbox");
+const { dbx, uploadFileToDropbox, deleteFileFromDropbox } = require("./config/dropbox");
+const movieUploadRoutes = require('../routes/upload.js');
+const {  authenticate , requireCreator , uploadLargeFile } = require('./middleware');
+
+router.use('/', movieUploadRoutes);
+
 
 
 // ✅ SSE for progress
@@ -141,21 +146,6 @@ router.get(
   }
 );
 
- const authenticate = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(400).json({ message: 'No token, authorization denied' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // now req.user contains { userId, username, role, email }
-    next();
-  } catch (err) {
-    console.log('Invalid token:', err.message);
-    return res.status(401).json({message: 'invalid tokenn'}) // redirect if token is invalid
-  }
-};
 router.get('/home', (req,res) => {
   res.render('home');
 }
@@ -373,24 +363,9 @@ router.get  ('/netflex/setting',authenticate, (req,res) => {
   res.render('netflexsetting', {role: req.user.role,user:req.user});
 });
 // Middleware to check role
-function requireCreator(req, res, next) {
-    const token = req.cookies.token;
-    if (!token) return res.status(401).send('Access denied. No token provided.');
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        if (decoded.role !== 'creator' && decoded.role !== 'admin') {
-            return res.status(403).send('Access denied. Only creators can upload trailers.');
-        }
-        req.user = decoded;
-        next();
-    } catch (err) {
-        return res.status(400).send('Invalid token');
-    }
-}
 
 
-router.get('/netflex/upload', requireCreator, (req, res) => {
+router.get('/netflex/upload', authenticate , requireCreator, (req, res) => {
 try {
     res.render('netflexupload',{role: req.user.role,user:req.user}); // <- view file
  }
@@ -426,161 +401,9 @@ function broadcastProgress(percent) {
     });
   }
 }
-async function uploadLargeFile(dbx, fileBuffer, filePath, onProgress) {
-  const CHUNK_SIZE = 8 * 1024 * 1024; // 8MB chunks
-  let offset = 0;
-  let sessionId = null;
 
-  while (offset < fileBuffer.length) {
-    const chunk = fileBuffer.slice(offset, offset + CHUNK_SIZE);
-
-    if (offset === 0) {
-      const response = await dbx.filesUploadSessionStart({ contents: chunk });
-      sessionId = response.result.session_id;
-    } else {
-      await dbx.filesUploadSessionAppendV2({
-        cursor: { session_id: sessionId, offset },
-        contents: chunk,
-      });
-    }
-
-    offset += chunk.length;
-
-    if (onProgress) {
-      const percent = Math.round((offset / fileBuffer.length) * 100);
-      onProgress(percent);
-    }
-  }
-
-  await dbx.filesUploadSessionFinish({
-    cursor: { session_id: sessionId, offset },
-    commit: { path: filePath, mode: 'add', autorename: true },
-  });
-    }
-     router.post(
-  '/netflex/upload',
-  requireCreator,
-  upload.fields([
-    { name: 'poster', maxCount: 1 },
-    { name: 'movie', maxCount: 1 },
-      { name: 'actressPhotos', maxCount: 10 },
-  ]),
-  async (req, res) => {
-    try {
     
-      const account = await dbx.usersGetCurrentAccount();
-  console.log("Dropbox connected as:", account.result.name.display_name);
-
-    let posterUrl = null;
-      let actressUrl = [];
-      let movieUrl = null;
-
-      // Poster upload
-      if (req.files['poster']) {
-        const posterFile = req.files['poster'][0];
-        const posterPath = "/" + Date.now() + "-" + posterFile.originalname;
-
-        await dbx.filesUpload({ path: posterPath, contents: posterFile.buffer });
-        const link = await dbx.sharingCreateSharedLinkWithSettings({ path: posterPath });
- posterUrl = makeDirectLink(link.result.url);
-      }
-        if (req.files['actressPhotos']) {
-        for (let file of req.files['actressPhotos']) {
-          const photoPath = "/" + Date.now() + "-" + file.originalname;
-
-          await dbx.filesUpload({ path: photoPath, contents: file.buffer });
-          const link = await dbx.sharingCreateSharedLinkWithSettings({ path: photoPath });
- actressUrl.push(makeDirectLink(link.result.url));
-        }
-      }	                  	                                  
-console.log("Movie body data:", req.body);
-
-       
-        const movieFile = req.files['movie'][0];
-        console.log("Buffer type:", Buffer.isBuffer(movieFile.buffer));
-  console.log("Buffer length:", movieFile.buffer.length);
-        const moviePath = "/movies/" + Date.now() + "-" + movieFile.originalname;
-       if (movieFile.size < 10 * 1024 * 1024) {
-        let simulatedPercent = 0;
-  const interval = setInterval(() => {
-    if (simulatedPercent < 90) {
-      simulatedPercent += 10;
-      broadcastProgress(simulatedPercent);
-    }
-  }, 300); // every 300ms
-    // Small file, normal upload
-    await dbx.filesUpload({ path: moviePath, contents: movieFile.buffer });
-       clearInterval(interval);
-  broadcastProgress(100);
-  console.log("Upload complete (small file).");
-  } else {
-        await uploadLargeFile(dbx, movieFile.buffer, moviePath, (percent) => {
-          console.log(`Upload progress: ${percent}%`);
-          broadcastProgress(percent); // sends updates to frontend via SSE
-        });
-      }
-        const link = await dbx.sharingCreateSharedLinkWithSettings({ path: moviePath });
- movieUrl = makeDirectLink(link.result.url);
-                       	                                            	      	                                   
-                            	      	         
-       	                  	          
-// Build movie data object
-let movieData = {
-  title: req.body.title,
-  description: req.body.description,
-  year: req.body.year,
-  country: req.body.country,
-  type: req.body.type,
-  genre: req.body.genre,
-  audioLanguages: req.body.audioLanguages ? req.body.audioLanguages.split(',').map(a => a.trim()) : [],
-  director: req.body.director,
-  cast: req.body.cast ? req.body.cast.split(',').map(c => c.trim()) : [],
-  duration: req.body.duration,
-  tags: req.body.tags ? req.body.tags.split(',').map(t => t.trim()) : [],
-  rating: req.body.rating,
-  posterUrl: posterUrl,
-  actressPhotos: actressUrl,
-  uploadedBy: req.user.userId
-};
-
-if (req.body.type === "movie" || req.body.type === "song" ) {
-  movieData.movieUrl = movieUrl;
-}
-
-if (req.body.type === "series" && req.files['movie']) {
-  movieData.seasonsUrl = [
-    {
-      seasonNumber: 1,
-      title: "Season 1",
-      episodes: [
-        {
-          title: req.body.episodeTitle || "Episode 1",
-          episodeNumber: 1,
-          description: req.body.episodeDescription || "First episode",
-          videoUrl: movieUrl, // required
-          duration: req.body.duration || 0,
-          releaseDate: new Date()
-        }
-      ]
-    }
-  ];
-}
-
-const movie = new Movie(movieData);
-
-await movie.save();
-res.redirect('/user/netflex/home');
-
-  
-    } catch (err) {
-    console.error("Upload error:", err);
-    res.status(500).json({ error: err.message });
-  }
-  
-
-}
-);
-
+   
 router.post('/netflex/movie/:movieId/season/:seasonNumber/complete', authenticate, async (req, res) => {
   try {
     const { movieId, seasonNumber } = req.params;
@@ -679,38 +502,7 @@ router.get('/netflex/search',authenticate, async (req, res) => {
   }
 });
 
-async function uploadLargeFile(dbx, buffer, dropboxPath, onProgress) {
-  const CHUNK_SIZE = 8 * 1024 * 1024; // 8MB per chunk
-  let offset = 0;
-  let sessionId = null;
 
-  while (offset < buffer.length) {
-    const chunk = buffer.slice(offset, offset + CHUNK_SIZE);
-
-    if (offset === 0) {
-      // Start session
-      const res = await dbx.filesUploadSessionStart({ contents: chunk });
-      sessionId = res.result.session_id;
-    } else if (offset + CHUNK_SIZE < buffer.length) {
-      // Append
-      await dbx.filesUploadSessionAppendV2({
-        cursor: { session_id: sessionId, offset },
-        contents: chunk
-      });
-    } else {
-      // Finish
-      await dbx.filesUploadSessionFinish({
-        cursor: { session_id: sessionId, offset },
-        commit: { path: dropboxPath, mode: 'add', autorename: true, mute: false },
-        contents: chunk
-      });
-    }
-
-    offset += CHUNK_SIZE;
-    let percent = Math.round((offset / buffer.length) * 100);
-    if (onProgress) onProgress(percent); // callback for progress
-  }
-}
 // Movie download route
 router.get('/movies/:id/download', async (req, res) => {
   try {
@@ -736,7 +528,7 @@ router.get('/movies/:id/download', async (req, res) => {
  // Mark a season as completed
 
 router.post(
-  "/netflex/movieDetails/add-episode/:movieId",
+  "/netflex/movieDetails/add-episode/:movieId", authenticate , 
   requireCreator,
   upload.single("episodeFile"),
   async (req, res) => {
@@ -814,7 +606,7 @@ let lastSeason = movie.seasonsUrl[movie.seasonsUrl.length - 1];
 
 // Delete Episode from a Series
 router.post(
-  '/netflex/movie/:movieId/season/:seasonNumber/episode/:episodeNumber/delete',
+  '/netflex/movie/:movieId/season/:seasonNumber/episode/:episodeNumber/delete', authenticate , 
   requireCreator,
   async (req, res) => {
     try {
@@ -864,7 +656,7 @@ router.post(
 
 // Delete Movie/Song/Entire Series
 router.post(
-  '/netflex/movie/:movieId/delete',
+  '/netflex/movie/:movieId/delete',authenticate ,
   requireCreator,
   async (req, res) => {
     try {
@@ -915,7 +707,7 @@ router.get('/netflex/profile/update', authenticate, async (req, res) => {
     role: req.user.role
   });
 });
-module.exports = {
-  authenticate ,router
-};
+// 👇 put this at the end of user.routes.js
+module.exports =
+  router;
  

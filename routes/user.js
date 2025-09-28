@@ -4,14 +4,14 @@ const User = require("./config/models/user.model");
 const Movie = require("./config/models/moviemodel");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
-const { authenticate } = require("./user.routes");
+const { authenticate, requireCreator, uploadLargeFile} = require("./middleware");
 const { dbx ,uploadFileToDropbox, deleteFileFromDropbox } = require("./config/dropbox");
 
 // -----------------------
 // Multer storage (memory only, since we upload to Dropbox)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-
+console.log("requireCreator type:", typeof requireCreator);
 // -----------------------
 // GET /me -> Profile page
 router.get("/me", authenticate, async (req, res) => {

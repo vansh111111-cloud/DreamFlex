@@ -5,6 +5,11 @@ const http = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
 
+
+   const { authenticate , requireCreator , uploadLargeFile  }= require('./routes/middleware');
+  
+   console.log("requireCreator type:", typeof requireCreator);
+  console.log("authenticate type:", typeof authenticate);
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URI, {
@@ -30,7 +35,11 @@ app.use((req, res, next) => {
 	    });
 // Import routers (keep your admin/user routers)
 const adminRouter = require('./routes/adminroutes');
-const {router:userRouter} = require('./routes/user.routes'); // adapt to your file
+const userRouter = require('./routes/user.routes');
+
+console.log("DEBUG userRoutes typeof:", typeof userRouter);
+console.log("DEBUG userRoutes keys:", Object.keys(userRouter));
+ // adapt to your file
 app.use('/admin', adminRouter);
 app.use('/user', userRouter);
 const userRoute = require('./routes/user');
