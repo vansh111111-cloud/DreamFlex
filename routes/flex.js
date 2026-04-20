@@ -76,6 +76,11 @@ async function uploadStreamToDropbox(chunkAsyncIterator, destPath, onProgress = 
   if (!sessionId) {
     // file was small — only one combined buffer present
     const finalBuffer = Buffer.concat(bufferQueue, bufferQueueLen);
+   console.log("Final buffer size:", finalBuffer.length);
+console.log("Upload path:", destPath);
+   if (!finalBuffer || finalBuffer.length === 0) {
+    throw new Error("Empty file buffer");
+   }
     const res = await dbx.filesUpload({ path: destPath, contents: finalBuffer, mode: { '.tag': 'add' } });
     // create shared link
     const link = await dbx.sharingCreateSharedLinkWithSettings({ path: res.result.path_lower || destPath });
@@ -159,7 +164,8 @@ function createFlexRouter(io) {
 
         fileFieldInfo = { fieldname, filename, encoding, mimeType };
 
-        const safeName = filename.replace(/\s+/g, "_");
+        const safeName = (filename || "file")
+  .replace(/[^a-zA-Z0-9.\-_]/g, "_");
         const destPath = `/flex/${Date.now()}-${safeName}`;
 
         // create async iterator from busboy file stream
@@ -180,7 +186,8 @@ function createFlexRouter(io) {
             const { dropboxPath, sharedUrl } = await uploadStreamToDropbox(asyncIter, destPath, onProgress);
             return { dropboxPath, sharedUrl };
           } catch (e) {
-            console.error('Dropbox upload failed', e);
+            console.error("DROPBOX FULL ERROR:");
+console.error(JSON.stringify(e?.error, null, 2));
             throw e;
           }
         })();
