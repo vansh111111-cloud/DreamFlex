@@ -26,7 +26,8 @@ router.post(
     console.log('DEBUG mw module filename:', mw && mw.__filename ? mw.__filename : Object.keys(mw));
     next();
   },
- 
+ console.log("REQ FILES:", req.files);
+console.log("REQ BODY:", req.body);
    requireCreator,
   upload.fields([
     { name: 'poster', maxCount: 1 },
