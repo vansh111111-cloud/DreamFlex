@@ -52,7 +52,9 @@ const io = new Server(server);
 // mount flex router factory and pass io
 const createFlexRouter = require('./routes/flex');
 app.use('/netflex/flex', createFlexRouter(io));
-
+app.get("/", (req, res) => {
+  res.redirect("/user/home");
+});
 // other app.use(...) keep them
 
 const PORT = process.env.PORT || 4000;
