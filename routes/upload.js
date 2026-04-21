@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const Movie = require('../routes/config/models/moviemodel');
+const Movie = require('../config/models/moviemodel');
 const upload = multer(); // memory storage
 const { dbx , uploadFileToDropbox } = require('../routes/config/dropbox.js'); // path to your helper
 const {  requireCreator , authenticate , uploadLargeFile  } = require('./middleware');
@@ -26,8 +26,7 @@ router.post(
     console.log('DEBUG mw module filename:', mw && mw.__filename ? mw.__filename : Object.keys(mw));
     next();
   },
- console.log("REQ FILES:", req.files);
-console.log("REQ BODY:", req.body);
+ 
    requireCreator,
   upload.fields([
     { name: 'poster', maxCount: 1 },
@@ -35,11 +34,13 @@ console.log("REQ BODY:", req.body);
     { name: 'actressPhotos', maxCount: 10 },
   ]),
   async (req, res) => {
-
+console.log("REQ FILES:", req.files);
+console.log("REQ BODY:", req.body);
   console.log('req.cookies:', req.cookies); // should include token
     console.log('req.user:', req.user);       // should now
     try {
     console.log('req.user:', req.user);
+      const token = req.cookies?.token;
     console.log('Token from cookie:', token);
       // Dropbox account check
       const account = await dbx.usersGetCurrentAccount();
